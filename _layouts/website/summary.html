@@ -1,6 +1,7 @@
-{% macro articles(_articles) %}
+{% macro articles(_articles, plevel) %}
     {% for article in _articles %}
-        <li class="chapter {% if article.path == file.path and not article.anchor %}active{% endif %}" data-level="{{ article.level }}" {% if article.path %}data-path="{{ article.path|resolveFile }}"{% endif %}>
+        {% set alevel = article.level if plevel else article.level | replace(plevel+'.1', plevel, 1) %}
+        <li class="chapter {% if article.path == file.path and not article.anchor %}active{% endif %}" data-level="{{ alevel }}" {% if article.path %}data-path="{{ article.path|resolveFile }}"{% endif %}>
             {% if article.path and getPageByPath(article.path) %}
                 <a href="{{ article.path|resolveFile }}{{ article.anchor }}">
             {% elif article.url %}
@@ -9,7 +10,7 @@
                 <span>
             {% endif %}
                     {% if article.level != "0" and config.pluginsConfig['theme-default'].showLevel %}
-                        <b>{{ article.level }}.</b>
+                        <b>{{ alevel }}.</b>
                     {% endif %}
                     {{ article.title }}
             {% if article.path  or article.url %}
@@ -20,7 +21,7 @@
 
             {% if article.articles.length > 0 %}
             <ul class="articles">
-                {{ articles(article.articles, file, config) }}
+                {{ articles(article.articles, plevel) }}
             </ul>
             {% endif %}
         </li>
@@ -43,12 +44,23 @@
     {% endif %}
 
     {% for part in summary.parts %}
+        {% if (part.articles | length == 1) and (part.articles[0].articles | length > 0) %}
+            {% set particle = part.articles[0] %}
+        {% else %}
+            {% set particle = false %}
+        {% endif %}
+
         {% if part.title %}
-        <li class="header">{{ part.title }}</li>
+            <li class="header">{{ part.title }}</li>
         {% elif not loop.first %}
         <li class="divider"></li>
         {% endif %}
-        {{ articles(part.articles, file, config) }}
+
+        {% if particle %}
+            {{ articles(particle.articles, particle.level | list | first ) }}
+        {% else %}
+            {{ articles(part.articles) }}
+        {% endif %}
     {% endfor %}
 
     <li class="divider"></li>

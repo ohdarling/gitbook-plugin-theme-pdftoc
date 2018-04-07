@@ -1,6 +1,6 @@
 {
-  "name": "gitbook-plugin-theme-default",
-  "description": "Default theme for GitBook",
+  "name": "gitbook-plugin-theme-pdftoc",
+  "description": "pdftoc theme for GitBook",
   "main": "./index.js",
   "version": "1.0.7",
   "engines": {
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GitbookIO/theme-default.git"
+    "url": "https://github.com/ohdarling/gitbook-plugin-theme-pdftoc.git"
   },
   "author": "FriendCode Inc. <contact@gitbook.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/GitbookIO/theme-default/issues"
+    "url": "https://github.com/ohdarling/gitbook-plugin-theme-pdftoc/issues"
   },
   "contributors": [
     {

@@ -2,7 +2,7 @@
 
 {% block title %}{{ "SUMMARY"|t }}{% endblock %}
 
-{% macro articles(_articles) %}
+{% macro articles(_articles, plevel) %}
     {% for article in _articles %}
         <li>
             <span class="inner">
@@ -15,13 +15,15 @@
                 {% else %}
                     <span>{{ article.title }}</span>
                 {% endif %}
-                {% if 1 %}
+                {% if plevel %}
+                <span class="page">{{ article.level | replace(plevel+'.1', plevel, 1) }}</span>
+                {% else %}
                 <span class="page">{{ article.level }}</span>
                 {% endif %}
             </span>
             {% if article.articles.length > 0 %}
             <ol>
-                {{ articles(article.articles) }}
+                {{ articles(article.articles, plevel) }}
             </ol>
             {% endif %}
         </li>
@@ -35,10 +37,19 @@
         {% for part in summary.parts %}
             {% if part.title %}
             <li class="part-title">
-                <h2>{{ part.title }}</h2>
+                <h2>{{ part.title }}
+                    {% if (part.articles | length == 1) and (part.articles[0].articles | length > 0) %}
+                        <a href="{{ part.articles[0].path|contentURL }}{{ part.articles[0].anchor }}"></a>
+                    {% endif %}
+                </h2>
             </li>
             {% endif %}
-            {{ articles(part.articles) }}
+
+            {% if (part.articles | length == 1) and (part.articles[0].articles | length > 0) %}
+                {{ articles(part.articles[0].articles, part.articles[0].level | list | first ) }}
+            {% else %}
+                {{ articles(part.articles) }}
+            {% endif %}
 
             {% if not loop.last %}
             <li class="divider"></li>
